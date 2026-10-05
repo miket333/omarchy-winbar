@@ -75,17 +75,25 @@ function buildNameIndex(entries) {
   return index
 }
 
+// App windows title themselves "Document - App", "Page / App" or "Discord | #general",
+// so a title rarely equals the app's display name on its own. Every separator-
+// delimited segment is tried, trailing first ("X. It's what's happening / X" is
+// X, "Discord | #general" is Discord). Only whole segments match, so a title
+// resolves to an app whose display name it actually contains.
+var TITLE_SEPARATORS = [" | ", " / ", " - ", " — ", " · "]
+
 function entryForTitle(title, nameIndex) {
   if (!nameIndex) return null
   var text = String(title || "").trim()
   if (!text) return null
   var exact = nameIndex[matchKey(text)]
   if (exact) return exact
-  // Many apps title their window "Document - App"; try the trailing segment.
-  var dash = text.lastIndexOf(" - ")
-  if (dash > 0) {
-    var tail = nameIndex[matchKey(text.slice(dash + 3))]
-    if (tail) return tail
+  for (var i = 0; i < TITLE_SEPARATORS.length; i++) {
+    var segments = text.split(TITLE_SEPARATORS[i])
+    for (var s = segments.length - 1; s >= 0; s--) {
+      var match = nameIndex[matchKey(segments[s])]
+      if (match) return match
+    }
   }
   return null
 }

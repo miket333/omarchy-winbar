@@ -86,8 +86,12 @@ Each window is resolved to the app it represents before grouping. The window
 class is matched against the desktop entries first; for terminals (their class
 names the emulator, not what is running inside) and for browser app / PWA
 windows (their class is synthetic) the window title is matched to a desktop
-entry's name instead. Anything unresolved falls back to the class. The resolved
-icon and identity are what the strip draws and groups by.
+entry's name instead. Titles are matched a segment at a time as well as whole,
+so a window titled `Home / X` or `Discord | #general` resolves to X or Discord
+and picks up that app's icon. Anything unresolved falls back to the class, and
+an icon name the theme cannot resolve draws the generic application icon rather
+than leaving an empty slot. The resolved icon and identity are what the strip
+draws and groups by.
 
 Window actions go out as Hyprland Lua dispatchers, because Hyprland 0.56 dropped
 the string dispatcher API and Quickshell's native `Toplevel.activate()` is not

@@ -216,20 +216,30 @@ BarWidget {
   implicitWidth: !visible ? 0 : (root.vertical ? barSize : contentExtent + Style.space(4))
   implicitHeight: !visible ? 0 : (root.vertical ? contentExtent + Style.space(4) : barSize)
 
+  // An icon name is not guaranteed to exist in the theme. A window whose class
+  // matches no desktop entry falls back to a name derived from that class, which
+  // usually resolves to nothing -- draw the generic application icon instead of
+  // leaving a blank slot in the strip.
+  function resolvedIconPath(iconName) {
+    var resolved = iconName ? Quickshell.iconPath(iconName, true) : ""
+    if (resolved) return resolved
+    return Quickshell.iconPath("application-x-executable", true)
+  }
+
   function iconSource(appId) {
-    return Quickshell.iconPath(Model.iconNameFor(appId, entryIndex), true)
+    return resolvedIconPath(Model.iconNameFor(appId, entryIndex))
   }
 
   // Icon for a group (or a window), preferring the icon name resolved when the
   // window was grouped -- that is what lets a foot window running cliamp show
   // the cliamp icon rather than foot's.
   function groupIconSource(group) {
-    if (group && group.iconName) return Quickshell.iconPath(group.iconName, true)
+    if (group && group.iconName) return resolvedIconPath(group.iconName)
     return iconSource(group ? group.appId : "")
   }
 
   function windowIconSource(win) {
-    if (win && win.iconName) return Quickshell.iconPath(win.iconName, true)
+    if (win && win.iconName) return resolvedIconPath(win.iconName)
     return iconSource(win ? win.appId : "")
   }
 
@@ -1024,7 +1034,7 @@ BarWidget {
       id: dragGhost
       visible: root.dragActive
       z: 12
-      source: root.dragAppId ? (root.dragIconName ? Quickshell.iconPath(root.dragIconName, true) : root.iconSource(root.dragAppId)) : ""
+      source: root.dragAppId ? (root.dragIconName ? root.resolvedIconPath(root.dragIconName) : root.iconSource(root.dragAppId)) : ""
       width: Math.round(root.iconSize * 1.5)
       height: width
       sourceSize.width: root.iconSize * 3
