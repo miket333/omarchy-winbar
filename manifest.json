@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.miket333.winbar",
+  "name": "Winbar",
+  "version": "1.0.0",
+  "author": "miket333",
+  "license": "MIT",
+  "description": "Windows-style taskbar for the Omarchy bar: one icon per app on the current workspace, live window thumbnails on hover, click to focus or maximize, and a pin shelf for quick launching.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Taskbar.qml"
+  },
+  "barWidget": {
+    "displayName": "Winbar",
+    "description": "Per-app icons for the current workspace with live window thumbnails, pinning, and a right-click management menu",
+    "category": "Compositor",
+    "allowMultiple": false,
+    "defaultSection": "left"
+  }
+}
